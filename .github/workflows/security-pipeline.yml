@@ -67,11 +67,8 @@ jobs:
           output: 'trivy-fs-results.txt'
           severity: 'CRITICAL,HIGH,MEDIUM'
         continue-on-error: true
-
-      - name: Build local Docker Image
-        run: docker build -t juice-shop:local .
-
-      - name: Scan Docker Image (Container Security)
+      
+      - name: Scan Container Image (Container Security)
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'bkimminich/juice-shop:latest'

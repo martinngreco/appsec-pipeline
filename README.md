@@ -14,11 +14,11 @@ The pipeline orchestrates automated security gates concurrently across ephemeral
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#ffffff',
-    'primaryTextColor': '#0f172a',
-    'primaryBorderColor': '#94a3b8',
+    'primaryColor': '#383737',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#2871d6',
     'lineColor': '#64748b',
-    'secondaryColor': '#f1f5f9',
+    'secondaryColor': '#8da7c1',
     'tertiaryColor': '#f8fafc',
     'fontFamily': 'Inter, system-ui, sans-serif',
     'fontSize': '13px'
@@ -79,19 +79,27 @@ flowchart TD
     end
 
     %% Styles & Accents
-    style SAST fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
-    style SECRETS fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
-    style SCA fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
-    style IAC fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
-    style ZAP fill:#ffffff,stroke:#7c3aed,stroke-width:1.5px,color:#0f172a
-    style Container fill:#ffffff,stroke:#7c3aed,stroke-width:1.5px,color:#0f172a
-    style Priority fill:#ffffff,stroke:#d97706,stroke-width:1.5px,color:#0f172a
-    style GateAction fill:#ffffff,stroke:#d97706,stroke-width:1.5px,color:#0f172a
-    style Block fill:#fef2f2,stroke:#dc2626,stroke-width:2px,color:#991b1b
-    style Pass fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#166534
-    style ParallelGates stroke:#64748b,stroke-width:2px
-    style Aggregation stroke:#64748b,stroke-width:2px
-    style DASTStage stroke:#64748b,stroke-width:2px
+    style SAST fill:#383737,stroke:#2563eb,stroke-width:2.5px,color:#ffffff
+    style SECRETS fill:#383737,stroke:#2563eb,stroke-width:2.5px,color:#ffffff
+    style SCA fill:#383737,stroke:#2563eb,stroke-width:1.5px,color:#ffffff
+    style IAC fill:#383737,stroke:#2563eb,stroke-width:1.5px,color:#ffffff
+    style ZAP fill:#383737,stroke:#7c3aed,stroke-width:1.5px,color:#ffffff
+    style Container fill:#383737,stroke:#7c3aed,stroke-width:2.5px,color:#ffffff
+    style Priority fill:#383737,stroke:#d97706,stroke-width:1.5px,color:#ffffff
+    style GateAction fill:#383737,stroke:#d97706,stroke-width:2.5px,color:#ffffff
+    style Block fill:#fef2f2,stroke:#dc2626,stroke-width:2.5px,color:#991b1b
+    style Pass fill:#f0fdf4,stroke:#16a34a,stroke-width:2.5px,color:#166534
+    style ParallelGates stroke:#64748b,stroke-width:2.5px
+    style Aggregation stroke:#64748b,stroke-width:2.5px
+    style DASTStage stroke:#64748b,stroke-width:2.5px
+
+    %% Subgraph Background & Border Styles (Gris elegante uniforme)
+    style Trigger fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc
+    style CI fill:#0f172a,stroke:#334155,stroke-width:2px,color:#f8fafc
+    style ParallelGates fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc
+    style Aggregation fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc
+    style DASTStage fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc
+    style Remediation fill:#0f172a,stroke:#334155,stroke-width:2px,color:#f8fafc
 ```
 
 * **SAST (Static Application Security Testing):** Semgrep inspecting TypeScript/JavaScript source code to detect injection flaws, prototype pollution, and insecure ORM calls.
