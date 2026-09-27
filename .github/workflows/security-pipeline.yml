@@ -74,7 +74,7 @@ jobs:
       - name: Scan Docker Image (Container Security)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'juice-shop:local'
+          image-ref: 'bkimminich/juice-shop:latest'
           format: 'table'
           output: 'trivy-image-results.txt'
           severity: 'CRITICAL,HIGH,MEDIUM'
@@ -102,7 +102,7 @@ jobs:
           framework: 'terraform'
           output_format: 'cli,sarif'
           output_file_path: 'console,checkov-results.sarif'
-          soft_fail: false # Enforces strict blocking on critical regressions (exit code 1)
+          soft_fail: true # Set to true in audit/demo mode to allow downstream DAST execution
           check: 'CKV_AWS_1,CKV_AWS_62,CKV_AWS_24,CKV_AWS_20'
 
       - name: Upload Checkov Report

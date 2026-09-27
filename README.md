@@ -15,28 +15,28 @@ The pipeline orchestrates automated security gates concurrently across ephemeral
   'theme': 'base',
   'themeVariables': {
     'primaryColor': '#ffffff',
-    'primaryTextColor': '#f4f7fe',
-    'primaryBorderColor': '#cbd5e1',
+    'primaryTextColor': '#0f172a',
+    'primaryBorderColor': '#94a3b8',
     'lineColor': '#64748b',
-    'secondaryColor': '#f8fafc',
-    'tertiaryColor': '#f1f5f9',
-    'fontFamily': 'Inter, ui-sans-serif, system-ui, -apple-system, sans-serif',
+    'secondaryColor': '#f1f5f9',
+    'tertiaryColor': '#f8fafc',
+    'fontFamily': 'Inter, system-ui, sans-serif',
     'fontSize': '13px'
   }
 }}%%
 flowchart TD
-    subgraph Trigger ["<span style='font-size: 15px;'><b>CI Trigger</b></span>"]
+    subgraph Trigger ["CI Trigger"]
         Commit["Developer Push / Pull Request"]
     end
 
-    subgraph CI ["<span style='font-size: 16px;'><b>GitHub Actions Workflow Execution</b></span>"]
+    subgraph CI ["GitHub Actions Workflow Execution"]
         direction TB
 
-        subgraph ParallelGates ["<span style='font-size: 14px;'><b>Concurrent Shift-Left Security Scans</b></span>"]
+        subgraph ParallelGates ["Concurrent Shift-Left Security Scans"]
             direction LR
             SAST["SAST Gate<br/><b>Semgrep OSS</b><br/><i>Code Smells & Injections</i>"]
             SECRETS["Secrets Gate<br/><b>Gitleaks</b><br/><i>Hardcoded Credentials</i>"]
-            SCA["SCA & Container Gate<br/><b>Aqua Trivy</b><br/><i>CVEs, Secrets & OS Base</i>"]
+            SCA["SCA & Container Gate<br/><b>Aqua Trivy</b><br/><i>CVEs & OS Base</i>"]
             IAC["IaC & Cloud Gate<br/><b>Bridgecrew Checkov</b><br/><i>Terraform Misconfigurations</i>"]
         end
 
@@ -45,7 +45,7 @@ flowchart TD
         Commit --> SCA
         Commit --> IAC
 
-        subgraph Aggregation ["<span style='font-size: 14px;'><b>Artifact Collection & Quality Gates</b></span>"]
+        subgraph Aggregation ["Artifact Collection & Quality Gates"]
             SARIF["Generate & Upload SARIF Artifacts"]
             SAST --> SARIF
             SECRETS --> SARIF
@@ -53,19 +53,19 @@ flowchart TD
             IAC --> SARIF
         end
 
-        subgraph DASTStage ["<span style='font-size: 14px;'><b>Dynamic Analysis Stage (DAST)</b></span>"]
+        subgraph DASTStage ["Dynamic Analysis Stage (DAST)"]
             direction TB
-            ZAP["DAST Gate<br/><b>OWASP ZAP Baseline</b><br/><i>Runtime Risks & Headers</i>"]
             Container["Juice Shop Runtime (:3000)"]
+            ZAP["DAST Gate<br/><b>OWASP ZAP Baseline</b><br/><i>Runtime Risks & Headers</i>"]
             Container -->|HTTP Crawl| ZAP
         end
 
         SARIF -->|All Parallel Gates Pass| DASTStage
     end
 
-    subgraph Remediation ["<span style='font-size: 16px;'><b>Triage & Enforcement</b></span>"]
+    subgraph Remediation ["Triage & Enforcement"]
         direction TB
-        Priority["<b>Risk Prioritization<br/><b>CVSS vs. KEV vs. EPSS</b>"]
+        Priority["<b>Risk Prioritization</b><br/>CVSS vs. KEV vs. EPSS"]
         GateAction{"Quality Gate Decision"}
         
         Block["Merge Blocked (Exit 1)<br/><i>SQLi, Secrets, Wildcard IAM</i>"]
@@ -78,19 +78,20 @@ flowchart TD
         GateAction -->|Low Risk Advisory| Pass
     end
 
-    %% Minimalist Accent Borders
-    style SAST stroke:#2563eb,stroke-width:1.5px
-    style SCA stroke:#2563eb,stroke-width:1.5px
-    style IAC stroke:#2563eb,stroke-width:1.5px
-    style ZAP stroke:#7c3aed,stroke-width:1.5px
-    style Container stroke:#7c3aed,stroke-width:1.5px
-    style Priority stroke:#d97706,stroke-width:1.5px
-    style GateAction stroke:#d97706,stroke-width:1.5px
+    %% Styles & Accents
+    style SAST fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
+    style SECRETS fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
+    style SCA fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
+    style IAC fill:#ffffff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
+    style ZAP fill:#ffffff,stroke:#7c3aed,stroke-width:1.5px,color:#0f172a
+    style Container fill:#ffffff,stroke:#7c3aed,stroke-width:1.5px,color:#0f172a
+    style Priority fill:#ffffff,stroke:#d97706,stroke-width:1.5px,color:#0f172a
+    style GateAction fill:#ffffff,stroke:#d97706,stroke-width:1.5px,color:#0f172a
     style Block fill:#fef2f2,stroke:#dc2626,stroke-width:2px,color:#991b1b
     style Pass fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#166534
-    style ParallelGates stroke:#30363d,stroke-width:3.5px
-    style Aggregation   stroke:#30363d,stroke-width:3.5px
-    style DASTStage stroke:#30363d,stroke-width:3.5px
+    style ParallelGates stroke:#64748b,stroke-width:2px
+    style Aggregation stroke:#64748b,stroke-width:2px
+    style DASTStage stroke:#64748b,stroke-width:2px
 ```
 
 * **SAST (Static Application Security Testing):** Semgrep inspecting TypeScript/JavaScript source code to detect injection flaws, prototype pollution, and insecure ORM calls.
