@@ -132,3 +132,58 @@ resource "aws_cloudwatch_log_group" "juice_shop" {
     Environment = var.environment
   }
 }
+
+
+# =============================================================================
+# INTENTIONAL MISCONFIGURATION: Public S3 Bucket without Encryption (Checkov CKV_AWS_20 / CKV_AWS_19)
+# =============================================================================
+resource "aws_s3_bucket" "app_backups" {
+  bucket        = "${var.project_name}-database-backups-bucket"
+  force_destroy = true
+
+  tags = {
+    Project     = var.project_name
+    Environment = var.environment
+  }
+}
+
+# Public ACL configuration
+resource "aws_s3_bucket_acl" "app_backups_acl" {
+  bucket = aws_s3_bucket.app_backups.id
+  acl    = "public-read"
+}
+
+# Missing Public Access Block: Explicitly allowing public access to the bucket
+resource "aws_s3_bucket_public_access_block" "app_backups_block" {
+  bucket = aws_s3_bucket.app_backups.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+# =============================================================================
+# INTENTIONAL MISCONFIGURATION: Overprivileged Wildcard IAM Policy (Checkov CKV_AWS_1 / CKV_AWS_62)
+# =============================================================================
+resource "aws_iam_policy" "wildcard_admin_policy" {
+  name        = "${var.project_name}-wildcard-admin-policy"
+  description = "Excessive privilege policy violating the principle of least privilege"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "AllowAllActionsGlobally"
+        Effect   = "Allow"
+        Action   = "*"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "wildcard_attach" {
+  role       = aws_iam_role.ecs_execution.name
+  policy_arn = aws_iam_policy.wildcard_admin_policy.arn
+}

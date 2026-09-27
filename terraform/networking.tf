@@ -291,3 +291,35 @@ resource "aws_efs_access_point" "juice_shop_data" {
   }
 }
 # vuln-code-snippet end iacLeakedKeyChallenge
+
+
+# =============================================================== #
+# INTENTIONAL MISCONFIGURATION: Overly Permissive Security Group  #
+# =============================================================== #
+resource "aws_security_group" "admin_management" {
+  name        = "${var.project_name}-management-sg"
+  description = "Management SG with unrestricted inbound administrative access"
+  vpc_id      = aws_vpc.main.id
+
+  # Critical finding: Inbound SSH exposed to the public internet
+  ingress {
+    description = "Unrestricted SSH access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-management-sg"
+    Project     = var.project_name
+    Environment = var.environment
+  }
+}
